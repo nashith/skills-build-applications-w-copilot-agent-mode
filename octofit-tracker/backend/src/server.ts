@@ -1,13 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import { registerRoutes } from './routes';
+import { connectToDatabase } from './database';
 
 dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT || 8000);
-const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/octofit_db';
 
 app.use(express.json());
 
@@ -27,8 +26,7 @@ app.get('/api/config', (_req, res) => {
 registerRoutes(app);
 
 async function startServer() {
-  await mongoose.connect(mongoUri);
-  console.log(`Connected to MongoDB at ${mongoUri}`);
+  await connectToDatabase();
 
   app.listen(port, () => {
     console.log(`OctoFit backend listening on port ${port}`);
